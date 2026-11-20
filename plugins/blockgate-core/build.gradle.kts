@@ -78,6 +78,12 @@ val integrationTestTask = tasks.register<Test>("integrationTest") {
     testClassesDirs = integrationTest.output.classesDirs
     classpath = integrationTest.runtimeClasspath
     shouldRunAfter(tasks.test)
+    // ShadowJarServicesIT: 배포 JAR의 relocate 결과를 검사한다
+    val shadowJarFile = tasks.shadowJar.flatMap { it.archiveFile }
+    inputs.file(shadowJarFile)
+    doFirst {
+        systemProperty("blockgate.shadowJar", shadowJarFile.get().asFile.absolutePath)
+    }
 }
 
 tasks.check {

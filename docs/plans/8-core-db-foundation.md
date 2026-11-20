@@ -49,6 +49,9 @@
 | T13 | 실제 DB로 활성화 → INFO `DB 연결 성공 (스키마 버전 1)`, 플러그인 활성 유지 | AC-6 | 정상 | 통합(MockBukkit + Testcontainers) | ☑ |
 | T14 | 비활성화 → 풀 닫힘 | AC-7 | 정상 | 통합(MockBukkit + Testcontainers) | ☑ |
 | T15 | `deployDev` → 서버 로그 2줄 확인, `exceptions_recent` 0건 | AC-8 | 정상 | E2E(VitaminMCP, 로그 확인) | ☐ |
+| T16 (추가) | 배포 JAR(shadowJar)의 Flyway 플러그인 서비스 목록이 flyway-core·flyway-database-postgresql 항목을 relocate된 이름으로 모두 포함 | AC-8 | 실패·예외 | 통합(빌드 산출물) | ☐ |
+
+> T16은 T15 첫 실행에서 발견: Shadow 9의 기본 `duplicatesStrategy = EXCLUDE` 때문에 서비스 파일이 병합되지 않아, 실서버에서 Flyway가 `NullPointerException`(PluginRegister)으로 실패했다. 서버 없이 CI에서 잡도록 추가.
 
 ## 5. 설계 메모
 
