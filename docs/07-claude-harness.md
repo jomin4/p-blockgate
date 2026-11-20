@@ -73,7 +73,7 @@
 
 | 서버 | 용도 | 비고 |
 |---|---|---|
-| `vitaminmcp` | 로컬 서버에서 봇 E2E | 버전은 Phase 3 검증 후 `.mcp.json`에 고정 |
+| `vitaminmcp` | 로컬 서버에서 봇 E2E | `vitaminmcp@3.2.2`로 고정 (Phase 3 검증). 플러그인 버전과 함께 올린다 (`docs/10-version-policy.md`) |
 
 - GitHub 작업은 MCP 대신 `gh` CLI를 사용한다.
 - DB는 `docker compose exec postgres psql`로 접근한다.

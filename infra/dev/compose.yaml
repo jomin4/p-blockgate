@@ -21,6 +21,8 @@ services:
       ENABLE_RCON: "TRUE"
       RCON_PASSWORD: ${MC_RCON_PASSWORD:?MC_RCON_PASSWORD 필요}
       TZ: Asia/Seoul
+      # 로컬 전용 설정 패치 (VitaminMCP read-only 해제, bukkit connection-throttle 해제). 대상 파일이 생긴 뒤 기동부터 적용
+      PATCH_DEFINITIONS: /patches
       # 플러그인이 읽는 DB 접속 정보 (키 이름은 docs/01 "설정" 행의 계약)
       BLOCKGATE_DB_URL: jdbc:postgresql://postgres:5432/${DB_NAME:-blockgate}
       BLOCKGATE_DB_USER: ${DB_USER:-blockgate}
@@ -28,11 +30,28 @@ services:
     ports:
       - "127.0.0.1:25565:25565"
       - "127.0.0.1:25575:25575" # RCON (로컬 전용)
+      - "127.0.0.1:25585:25586" # VitaminMCP agent ← vitaminmcp-proxy (로컬 전용)
     volumes:
       - ./data:/data
       - ./plugins-extra:/plugins:ro # VitaminMCP 등 외부 플러그인 JAR (gitignore) → /data/plugins로 동기화
+      - ./patches:/patches:ro
+      # VitaminMCP local-handshake: 플러그인이 /data/.vitaminmcp/agents에 쓰는 접속 정보를
+      # 호스트 MCP 서버가 읽는 ~/.vitaminmcp/agents로 연결 → session_start 무인자 연결
+      - ~/.vitaminmcp/agents:/data/.vitaminmcp/agents
     tty: true
     stdin_open: true
+
+  # VitaminMCP agent는 컨테이너 loopback(127.0.0.1:25585)에만 열린다 (그 밖은 TLS 필수).
+  # mc와 같은 네트워크 네임스페이스에서 25586 → 127.0.0.1:25585로 넘겨 주고,
+  # 호스트에는 127.0.0.1:25585로만 공개한다 (mc의 ports 참고).
+  vitaminmcp-proxy:
+    image: alpine/socat:1.8.1.1
+    container_name: blockgate-dev-vitaminmcp-proxy
+    network_mode: "service:mc"
+    depends_on:
+      - mc
+    command: ["TCP-LISTEN:25586,fork,reuseaddr", "TCP:127.0.0.1:25585"]
+    restart: unless-stopped
 
   postgres:
     image: postgres:17.12

@@ -2,7 +2,7 @@
   "mcpServers": {
     "vitaminmcp": {
       "command": "npx",
-      "args": ["-y", "vitaminmcp"]
+      "args": ["-y", "vitaminmcp@3.2.2"]
     }
   }
 }

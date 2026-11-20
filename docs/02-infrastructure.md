@@ -68,7 +68,9 @@
 |---|---|
 | `mc` | 운영과 같은 이미지·버전·빌드. `ONLINE_MODE=FALSE`(봇 접속용), `127.0.0.1:25565`만 바인딩, RCON 활성(`127.0.0.1:25575` 바인딩) |
 | `postgres` | `postgres:17.12`, `127.0.0.1:5432`만 바인딩, 데이터는 이름 있는 볼륨 `blockgate-dev_pgdata` |
-| VitaminMCP 플러그인 | `infra/dev/plugins-extra/`에 다운로드 (gitignore), 컨테이너 plugins로 복사 |
+| VitaminMCP 플러그인 | `infra/dev/plugins-extra/`에 다운로드 (gitignore), 컨테이너 plugins로 복사. 설정 `read-only: false`와 bukkit `connection-throttle: -1`(봇 연속 재접속, 기본 4초 제한)은 `infra/dev/patches/`로 자동 패치 (로컬 전용) |
+| `vitaminmcp-proxy` | `alpine/socat`, mc와 같은 네트워크 네임스페이스. agent는 컨테이너 loopback(25585)에만 열리므로(그 밖은 TLS 필수) 25586 → 127.0.0.1:25585로 중계, 호스트에는 `127.0.0.1:25585`로만 공개 |
+| local-handshake | 호스트 `~/.vitaminmcp/agents` ↔ 컨테이너 `/data/.vitaminmcp/agents` 마운트 → `session_start` 무인자 연결 |
 
 | 항목 | 값 |
 |---|---|
