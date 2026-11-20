@@ -12,6 +12,12 @@ public record DatabaseSettings(String url, String user, String password, int poo
     static final String ENV_USER = "BLOCKGATE_DB_USER";
     static final String ENV_PASSWORD = "BLOCKGATE_DB_PASSWORD";
 
+    public DatabaseSettings {
+        if (url == null || url.isBlank()) {
+            throw new IllegalStateException("DB URL이 설정되지 않았습니다 (BLOCKGATE_DB_URL 또는 config.yml database.url)");
+        }
+    }
+
     public static DatabaseSettings resolve(Map<String, String> env, ConfigurationSection config) {
         return new DatabaseSettings(
                 pick(env, ENV_URL, config.getString("database.url")),
