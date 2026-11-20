@@ -43,6 +43,17 @@ public class BlockGateCore extends JavaPlugin {
                         getServer().getScheduler().runTask(this, () -> onStartupFinished(result, error)));
     }
 
+    @Override
+    public void onDisable() {
+        HikariDataSource ds = dataSource;
+        if (ds != null) {
+            ds.close();
+        }
+        if (dbExecutor != null) {
+            dbExecutor.close();
+        }
+    }
+
     private MigrationResult connectAndMigrate() {
         DatabaseSettings settings = DatabaseSettings.resolve(env, getConfig());
         dataSource = DataSourceFactory.create(settings);
@@ -57,6 +68,11 @@ public class BlockGateCore extends JavaPlugin {
             return;
         }
         getLogger().info("DB 연결 성공 (스키마 버전 " + result.schemaVersion() + ")");
+    }
+
+    /** 초기화된 DB 풀 (초기화 전·실패 시 null). */
+    HikariDataSource dataSource() {
+        return dataSource;
     }
 
     /** 테스트용: 비동기 초기화(결과 처리 예약까지)가 끝나면 완료되는 future. */

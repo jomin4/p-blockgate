@@ -47,7 +47,7 @@
 | T11 | 닫힌 실행기에 맡기면 `IllegalStateException` 실패 future | AC-5 | 경계 | 단위(JUnit) | ☑ |
 | T12 | 연결할 수 없는 DB 설정으로 활성화 → `onEnable` 예외 없음, SEVERE `DB 연결 실패:` 로그, 플러그인 비활성화 | AC-6 | 실패·예외 | 단위(MockBukkit) | ☑ |
 | T13 | 실제 DB로 활성화 → INFO `DB 연결 성공 (스키마 버전 1)`, 플러그인 활성 유지 | AC-6 | 정상 | 통합(MockBukkit + Testcontainers) | ☑ |
-| T14 | 비활성화 → 풀 닫힘 | AC-7 | 정상 | 통합(MockBukkit + Testcontainers) | ☐ |
+| T14 | 비활성화 → 풀 닫힘 | AC-7 | 정상 | 통합(MockBukkit + Testcontainers) | ☑ |
 | T15 | `deployDev` → 서버 로그 2줄 확인, `exceptions_recent` 0건 | AC-8 | 정상 | E2E(VitaminMCP, 로그 확인) | ☐ |
 
 ## 5. 설계 메모
