@@ -46,6 +46,22 @@ class DbExecutorTest {
     }
 
     @Test
+    @DisplayName("T17 / AC-5: 작업이 Error를 던져도 같은 원인의 실패 future가 된다")
+    void errorBecomesFailedFuture() {
+        var linkage = new LinkageError("shaded class missing");
+
+        var future = executor.submit(() -> {
+            throw linkage;
+        });
+
+        assertThat(future)
+                .failsWithin(5, TimeUnit.SECONDS)
+                .withThrowableOfType(java.util.concurrent.ExecutionException.class)
+                .havingCause()
+                .isSameAs(linkage);
+    }
+
+    @Test
     @DisplayName("T11 / AC-5: 닫힌 실행기에 맡기면 IllegalStateException 실패 future")
     void submitAfterCloseFails() {
         executor.close();
