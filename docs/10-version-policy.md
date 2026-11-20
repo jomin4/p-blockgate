@@ -34,3 +34,4 @@
 | 라이브러리 | 고정 버전. 보안 이슈가 있으면 `chore(plugin)` 이슈로 올림 |
 | Paper 빌드 번호 | 같은 26.1.2 안의 새 stable 빌드는 `chore(server)` 이슈로 반영 가능 (paper-api 빌드도 함께) |
 | GitHub Actions | 메이저 버전 태그 고정 (예: `actions/checkout@v5`) |
+| VitaminMCP | npm `vitaminmcp@X`(`.mcp.json`)와 플러그인 `VitaminMCP.jar` X를 **같은 버전으로 함께** 올린다. `docs/01`의 버전·SHA-256과 local-dev 스킬의 받기 명령을 갱신하고, smoke 시나리오 3회 연속 통과를 확인한다 (`chore(repo)` 이슈) |

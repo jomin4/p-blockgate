@@ -14,7 +14,8 @@ Paper 26.1.2(빌드 고정) + PostgreSQL 17 로컬 서버. 명세는 `docs/02-in
 ## 처음 한 번
 1. `infra/dev/.env.example`을 `infra/dev/.env`로 복사하고 비밀번호를 바꾼다 (Claude에게 "로컬 서버 띄워줘"라고 하면 대신 만든다).
 2. Minecraft EULA(https://aka.ms/MinecraftEULA)에 동의한 경우에만 `MC_EULA=TRUE`로 바꾼다.
-3. `~/.vitaminmcp/agents` 폴더를 미리 만든다 (Linux에서 Docker가 root 소유로 만들면 플러그인이 쓰지 못한다).
+3. `~/.vitaminmcp/agents` 폴더를 미리 만든다 (Linux에서 Docker가 root 소유로 만들면 플러그인이 쓰지 못한다). 이 폴더는 컨테이너에 쓰기 가능으로 마운트되므로 **이 로컬 서버 전용**으로 쓴다.
+   - Linux: 서버는 UID 1000으로 돈다. 내 UID가 1000이 아니면 폴더 권한을 맞추고, `sudo docker compose`는 쓰지 않는다(`~`가 /root로 풀린다).
 4. VitaminMCP.jar를 `plugins-extra/`에 받는다 (local-dev 스킬). 첫 기동 뒤 한 번 재시작해야 `read-only: false` 패치가 적용된다.
 
 사용법은 `.claude/skills/local-dev/SKILL.md` 참고 ("로컬 서버 띄워줘").

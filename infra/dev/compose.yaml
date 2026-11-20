@@ -7,9 +7,14 @@ services:
   mc:
     image: itzg/minecraft-server:2026.11.0-java25
     container_name: blockgate-dev-mc
+    # 네트워크 네임스페이스는 vitaminmcp-proxy가 소유하고 mc는 합류한다 (포트도 proxy에서 공개).
+    # 합류한 쪽(mc)은 재시작해도 소유자의 네임스페이스에 다시 붙으므로 `restart mc`가 안전하다.
+    network_mode: "service:vitaminmcp-proxy"
     depends_on:
       postgres:
         condition: service_healthy
+      vitaminmcp-proxy:
+        condition: service_started
     environment:
       EULA: ${MC_EULA:?MC_EULA를 .env에 설정하세요 (개발자 동의 후 TRUE)}
       TYPE: PAPER
@@ -27,10 +32,6 @@ services:
       BLOCKGATE_DB_URL: jdbc:postgresql://postgres:5432/${DB_NAME:-blockgate}
       BLOCKGATE_DB_USER: ${DB_USER:-blockgate}
       BLOCKGATE_DB_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD 필요}
-    ports:
-      - "127.0.0.1:25565:25565"
-      - "127.0.0.1:25575:25575" # RCON (로컬 전용)
-      - "127.0.0.1:25585:25586" # VitaminMCP agent ← vitaminmcp-proxy (로컬 전용)
     volumes:
       - ./data:/data
       - ./plugins-extra:/plugins:ro # VitaminMCP 등 외부 플러그인 JAR (gitignore) → /data/plugins로 동기화
@@ -41,16 +42,19 @@ services:
     tty: true
     stdin_open: true
 
-  # VitaminMCP agent는 컨테이너 loopback(127.0.0.1:25585)에만 열린다 (그 밖은 TLS 필수).
-  # mc와 같은 네트워크 네임스페이스에서 25586 → 127.0.0.1:25585로 넘겨 주고,
-  # 호스트에는 127.0.0.1:25585로만 공개한다 (mc의 ports 참고).
+  # mc와 공유하는 네트워크 네임스페이스의 소유자이자 VitaminMCP agent 중계.
+  # agent는 네임스페이스 loopback(127.0.0.1:25585)에만 열린다 (그 밖은 TLS 필수) →
+  # 25586에서 받아 127.0.0.1:25585로 넘기고, 호스트에는 127.0.0.1:25585로만 공개한다.
+  # 25586은 compose 내부 네트워크에서는 평문으로 닿지만 agent 토큰으로 보호된다 (로컬 전용).
+  # 이 컨테이너만 따로 재시작하지 않는다 (mc의 네트워크가 끊긴다) — 필요하면 `up -d`.
   vitaminmcp-proxy:
     image: alpine/socat:1.8.1.1
     container_name: blockgate-dev-vitaminmcp-proxy
-    network_mode: "service:mc"
-    depends_on:
-      - mc
     command: ["TCP-LISTEN:25586,fork,reuseaddr", "TCP:127.0.0.1:25585"]
+    ports:
+      - "127.0.0.1:25565:25565" # Minecraft (mc)
+      - "127.0.0.1:25575:25575" # RCON (mc, 로컬 전용)
+      - "127.0.0.1:25585:25586" # VitaminMCP agent (로컬 전용)
     restart: unless-stopped
 
   postgres:

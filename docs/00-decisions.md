@@ -81,5 +81,5 @@
 |---|---|
 | Oracle 가입 | ✅ 완료 (OCID 등은 세팅 시 Claude Code에 제공) |
 | Osaka A1 용량 | 인스턴스 생성 시 확인 (실패 시 재시도) |
-| Paper 26.1.2 stable 빌드 번호 | Phase 2에서 최신 stable로 고정 |
-| VitaminMCP 26.1.2 실동작 | Phase 3에서 확인 후 버전 고정 |
+| Paper 26.1.2 stable 빌드 번호 | ✅ 빌드 74로 고정 (Phase 2, `docs/01`) |
+| VitaminMCP 26.1.2 실동작 | ✅ 3.2.2로 확인·고정 (Phase 3, `docs/01`) |
