@@ -13,14 +13,15 @@ services:
     environment:
       EULA: ${MC_EULA:?MC_EULA를 .env에 설정하세요 (개발자 동의 후 TRUE)}
       TYPE: PAPER
-      VERSION: ${MC_VERSION:?MC_VERSION 필요}
-      PAPER_BUILD: ${MC_PAPER_BUILD:?MC_PAPER_BUILD 필요}
+      # 버전·빌드는 여기서만 고정한다 (.env로 빼지 않음 — docs/01, docs/10 절차로만 변경)
+      VERSION: "26.1.2"
+      PAPER_BUILD: "74"
       MEMORY: ${MC_MEMORY:-4G}
       ONLINE_MODE: "FALSE" # 로컬 전용: 봇(VitaminMCP) 접속용
       ENABLE_RCON: "TRUE"
       RCON_PASSWORD: ${MC_RCON_PASSWORD:?MC_RCON_PASSWORD 필요}
       TZ: Asia/Seoul
-      # 플러그인이 읽는 DB 접속 정보 (Phase 4, 환경변수 우선)
+      # 플러그인이 읽는 DB 접속 정보 (키 이름은 docs/01 "설정" 행의 계약)
       BLOCKGATE_DB_URL: jdbc:postgresql://postgres:5432/${DB_NAME:-blockgate}
       BLOCKGATE_DB_USER: ${DB_USER:-blockgate}
       BLOCKGATE_DB_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD 필요}

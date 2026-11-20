@@ -4,7 +4,7 @@
 
 | 구분 | 항목 | 버전 | 고정 위치 |
 |---|---|---|---|
-| 게임 | Minecraft / Paper | 26.1.2, stable 빌드 **74** (2026-07-06, Phase 2 고정) | `infra/*/.env`의 `MC_VERSION`, `MC_PAPER_BUILD` |
+| 게임 | Minecraft / Paper | 26.1.2, stable 빌드 **74** (2026-07-06, Phase 2 고정) | `infra/*/compose.yaml`의 `VERSION`, `PAPER_BUILD` (`.env`로 빼지 않음) |
 | 런타임 | Java | Temurin 25 | Gradle toolchain, itzg 이미지 태그 |
 | 컨테이너 | itzg/minecraft-server | `2026.11.0-java25` (amd64·arm64) | `infra/*/compose.yaml` |
 | 빌드 | Gradle | 9.x (Java 25 지원 버전) | `plugins/gradle/wrapper/gradle-wrapper.properties` |
@@ -31,7 +31,7 @@
 | 명령어 | Paper Brigadier API (`LifecycleEvents.COMMANDS`) |
 | DB | 메인 스레드에서 DB 호출 금지 → 비동기 실행 후 결과만 메인 스레드로 |
 | 의존성 포함 | HikariCP·pgJDBC·Flyway는 Shadow로 포함하고 relocate |
-| 설정 | `config.yml`은 기본값 포함, DB 접속 정보는 환경변수 우선 |
+| 설정 | `config.yml`은 기본값 포함, DB 접속 정보는 환경변수 우선: `BLOCKGATE_DB_URL`(JDBC URL), `BLOCKGATE_DB_USER`, `BLOCKGATE_DB_PASSWORD` (compose가 주입) |
 
 ## 플러그인 프로젝트 구조
 

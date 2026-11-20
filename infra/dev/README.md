@@ -15,3 +15,5 @@ Paper 26.1.2(빌드 고정) + PostgreSQL 17 로컬 서버. 명세는 `docs/02-in
 2. Minecraft EULA(https://aka.ms/MinecraftEULA)에 동의한 경우에만 `MC_EULA=TRUE`로 바꾼다.
 
 사용법은 `.claude/skills/local-dev/SKILL.md` 참고 ("로컬 서버 띄워줘").
+
+> Windows: `data/`는 NTFS 바인드 마운트라 월드 I/O가 느릴 수 있다. 느리면 레포를 WSL 파일시스템(`\\wsl$\...`)에 두면 빠르다.
