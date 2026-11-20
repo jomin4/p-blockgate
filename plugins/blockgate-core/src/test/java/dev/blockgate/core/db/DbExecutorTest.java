@@ -1,0 +1,31 @@
+package dev.blockgate.core.db;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+
+import java.util.concurrent.TimeUnit;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+@Tag("unit")
+class DbExecutorTest {
+
+    private final DbExecutor executor = new DbExecutor(2);
+
+    @AfterEach
+    void tearDown() {
+        executor.close();
+    }
+
+    @Test
+    @DisplayName("T9 / AC-5: 맡긴 작업이 BlockGateCore-DB- 스레드에서 실행되고 결과를 돌려준다")
+    void runsOnDedicatedThread() throws Exception {
+        String caller = Thread.currentThread().getName();
+
+        String worker = executor.submit(() -> Thread.currentThread().getName()).get(5, TimeUnit.SECONDS);
+
+        assertThat(worker).startsWith("BlockGateCore-DB-").isNotEqualTo(caller);
+    }
+}
