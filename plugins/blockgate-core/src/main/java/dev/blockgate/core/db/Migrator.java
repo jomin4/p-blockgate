@@ -18,8 +18,8 @@ public final class Migrator {
                 .dataSource(dataSource)
                 .locations("classpath:db/migration")
                 .load();
-        flyway.migrate();
+        int applied = flyway.migrate().migrationsExecuted;
         var current = flyway.info().current();
-        return new MigrationResult(current == null ? null : current.getVersion().getVersion());
+        return new MigrationResult(current == null ? null : current.getVersion().getVersion(), applied);
     }
 }

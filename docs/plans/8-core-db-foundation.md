@@ -41,7 +41,7 @@
 | T5 | pool-size 0 → AC-2 메시지로 실패 (1은 허용) | AC-2 | 경계 | 단위(JUnit) | ☑ |
 | T6 | 풀 이름·최대 크기, PostgreSQL 17에 `SELECT 1` = 1 | AC-3 | 정상 | 통합(Testcontainers) | ☑ |
 | T7 | 빈 DB 마이그레이션 → 버전 1, `bg_meta` 존재 | AC-4 | 정상 | 통합(Testcontainers) | ☑ |
-| T8 | 마이그레이션 두 번째 실행 → 적용 0건 (재시작 후 유지) | AC-4 | MC 특수 | 통합(Testcontainers) | ☐ |
+| T8 | 마이그레이션 두 번째 실행 → 적용 0건 (재시작 후 유지) | AC-4 | MC 특수 | 통합(Testcontainers) | ☑ |
 | T9 | 맡긴 작업이 `BlockGateCore-DB-` 스레드에서 실행되고 결과를 돌려준다 | AC-5 | 정상 | 단위(JUnit) | ☐ |
 | T10 | 작업 예외 → 같은 원인의 실패 future | AC-5 | 실패·예외 | 단위(JUnit) | ☐ |
 | T11 | 닫힌 실행기에 맡기면 `IllegalStateException` 실패 future | AC-5 | 경계 | 단위(JUnit) | ☐ |
