@@ -73,6 +73,17 @@ class DatabaseSettingsTest {
     }
 
     @Test
+    @DisplayName("T20 / AC-1: toString()에 비밀번호가 드러나지 않는다")
+    void toStringMasksPassword() {
+        var settings = new DatabaseSettings("jdbc:postgresql://h:5432/db", "u", "s3cret-value", 4);
+
+        assertThat(settings.toString())
+                .doesNotContain("s3cret-value")
+                .contains("password=***")
+                .contains("jdbc:postgresql://h:5432/db");
+    }
+
+    @Test
     @DisplayName("T5 / AC-2: pool-size 0이면 실패, 1은 허용")
     void poolSizeMustBeAtLeastOne() {
         String url = "jdbc:postgresql://cfg-host:5432/cfgdb";
