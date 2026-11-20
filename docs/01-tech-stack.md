@@ -7,15 +7,15 @@
 | 게임 | Minecraft / Paper | 26.1.2, stable 빌드 **74** (2026-07-06, Phase 2 고정) | `infra/*/compose.yaml`의 `VERSION`, `PAPER_BUILD` (`.env`로 빼지 않음) |
 | 런타임 | Java | Temurin 25 | Gradle toolchain, itzg 이미지 태그 |
 | 컨테이너 | itzg/minecraft-server | `2026.11.0-java25` (amd64·arm64) | `infra/*/compose.yaml` |
-| 빌드 | Gradle | 9.x (Java 25 지원 버전) | `plugins/gradle/wrapper/gradle-wrapper.properties` |
+| 빌드 | Gradle | **9.8.2** (배포판 SHA-256 고정) + Shadow **9.6.1** | `plugins/gradle/wrapper/gradle-wrapper.properties`, `libs.versions.toml` |
 | API | paper-api | `26.1.2.build.74-stable` (서버 빌드와 동일) | `plugins/gradle/libs.versions.toml` |
 | DB | PostgreSQL | 17 (`postgres:17.12`) | compose 이미지 태그, Testcontainers 이미지 |
-| 라이브러리 | pgJDBC, HikariCP, Flyway | 세팅 시점 최신 stable | `libs.versions.toml` |
-| 테스트 | JUnit 5, AssertJ | MockBukkit과 호환되는 버전 | `libs.versions.toml` |
-| | MockBukkit | `org.mockbukkit.mockbukkit:mockbukkit-v26.1.2` | `libs.versions.toml` |
-| | Mockito | 5.x | `libs.versions.toml` |
-| | Testcontainers | 세팅 시점 최신 stable | `libs.versions.toml` |
-| | JaCoCo | Java 25 지원 버전 | `build.gradle.kts` |
+| 라이브러리 | pgJDBC, HikariCP, Flyway | pgJDBC **42.7.14**, HikariCP **7.1.0**, Flyway **13.12.1** (+ flyway-database-postgresql) | `libs.versions.toml` |
+| 테스트 | JUnit Jupiter, AssertJ | JUnit **6.1.2**(MockBukkit 4.115.0이 쓰는 버전), AssertJ **3.27.7** | `libs.versions.toml` |
+| | MockBukkit | `org.mockbukkit.mockbukkit:mockbukkit-v26.1.2` **4.115.0** | `libs.versions.toml` |
+| | Mockito | **5.24.0** | `libs.versions.toml` |
+| | Testcontainers | **2.0.5** (`testcontainers-postgresql`, 이미지 `postgres:17.12`) | `libs.versions.toml` |
+| | JaCoCo | **0.8.16** | `libs.versions.toml` |
 | E2E | VitaminMCP | **3.2.2** (Phase 3 검증): npm `vitaminmcp@3.2.2` + 플러그인 `VitaminMCP.jar` 3.2.2 (SHA-256 `338dd33b334b14c3dfd7100e5cd27b0e07d502f06d6011f109a00fe2b4cafbb9`) | `.mcp.json`, `infra/dev/plugins-extra/` (받는 법: local-dev 스킬) |
 | | alpine/socat | `1.8.1.1` (VitaminMCP agent 포트 중계, 로컬 전용) | `infra/dev/compose.yaml` |
 | 인프라 | Terraform | OCI native backend 지원 버전 (1.12+) | `required_version` |

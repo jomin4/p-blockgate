@@ -89,14 +89,14 @@
 |---|---|
 | 1 | Gradle Wrapper(9.x), `settings.gradle.kts`, `gradle/libs.versions.toml`(모든 버전 고정) |
 | 2 | `blockgate-core` 모듈: Paper 플러그인 메타(`paper-plugin.yml` 또는 `plugin.yml`, api-version 26.1.2 대응), Shadow + relocate |
-| 3 | 소스셋 `test` + `integrationTest`, JUnit 5, AssertJ, MockBukkit v26.1.2, Mockito agent, Testcontainers, JaCoCo (`docs/04-tdd-testing.md` 8장) |
+| 3 | 소스셋 `test` + `integrationTest`, JUnit Jupiter(MockBukkit 호환 버전), AssertJ, MockBukkit v26.1.2, Mockito agent, Testcontainers, JaCoCo (`docs/04-tdd-testing.md` 8장) |
 | 4 | **skip = 실패** 설정 → 일부러 skip 테스트를 만들어 빌드가 실패하는지 확인 → 제거 |
 | 5 | DB 기반: HikariCP 풀, Flyway `V1__baseline.sql`, 비동기 실행기, 설정(`config.yml` + 환경변수) — **TDD로 작성** |
 | 6 | 활성화 로그 `[BlockGateCore] Enabling` / DB 연결 결과 로그 (CD 헬스 체크에서 사용) |
 | 7 | `deployDev` 태스크 → 로컬 서버에서 플러그인 활성화 확인 → VitaminMCP로 서버 예외 없음 확인 |
 
-- [ ] ✅ `./gradlew check`(단위+통합) 통과, skip 0, JaCoCo 리포트 생성
-- [ ] ✅ 로컬 서버에서 플러그인 활성화 + DB 연결 로그 확인
+- [x] ✅ `./gradlew check`(단위+통합) 통과, skip 0, JaCoCo 리포트 생성
+- [x] ✅ 로컬 서버에서 플러그인 활성화 + DB 연결 로그 확인
 
 ## Phase 5. OCI 인프라 (Terraform)
 
@@ -165,7 +165,7 @@
 | 1. Git · GitHub | ✅ (collaborator 초대는 추후) | #3 |
 | 2. 로컬 개발 인프라 | ✅ | #5 |
 | 3. VitaminMCP 검증 | ✅ | #7 |
-| 4. 플러그인 골격 + 테스트 | ⬜ | |
+| 4. 플러그인 골격 + 테스트 | ✅ | #9 |
 | 5. OCI 인프라 | ⬜ | |
 | 6. 운영 서버 | ⬜ | |
 | 7. CI/CD | ⬜ | |

@@ -24,7 +24,7 @@
 | | API | paper-api `26.1.2.build.N-stable`(서버와 같은 빌드), Adventure, Brigadier |
 | DB | DB | PostgreSQL 17 |
 | | 연결·마이그레이션 | pgJDBC + HikariCP(shaded) + Flyway, DB 작업은 모두 비동기 |
-| 테스트 | 단위(순수 로직) | JUnit 5 + AssertJ |
+| 테스트 | 단위(순수 로직) | JUnit Jupiter(6.x, MockBukkit 호환) + AssertJ |
 | | 단위(Bukkit API) | MockBukkit `mockbukkit-v26.1.2` |
 | | 대체 객체 | Mockito 5 (`-javaagent` 설정) |
 | | 통합(DB) | Testcontainers + PostgreSQL |
