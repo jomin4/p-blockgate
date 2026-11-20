@@ -33,4 +33,21 @@ class DatabaseSettingsTest {
         assertThat(settings.password()).isEqualTo("cfg-pass");
         assertThat(settings.poolSize()).isEqualTo(6);
     }
+
+    @Test
+    @DisplayName("T2 / AC-1: 환경변수가 있으면 config.yml보다 우선한다 (빈 문자열 환경변수는 무시)")
+    void envOverridesConfig() {
+        var yaml = config("jdbc:postgresql://cfg-host:5432/cfgdb", "cfg-user", "cfg-pass", 6);
+        var env = Map.of(
+                "BLOCKGATE_DB_URL", "jdbc:postgresql://env-host:5432/envdb",
+                "BLOCKGATE_DB_USER", "",
+                "BLOCKGATE_DB_PASSWORD", "env-pass");
+
+        DatabaseSettings settings = DatabaseSettings.resolve(env, yaml);
+
+        assertThat(settings.url()).isEqualTo("jdbc:postgresql://env-host:5432/envdb");
+        assertThat(settings.user()).isEqualTo("cfg-user");
+        assertThat(settings.password()).isEqualTo("env-pass");
+        assertThat(settings.poolSize()).isEqualTo(6);
+    }
 }
