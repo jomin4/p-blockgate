@@ -31,8 +31,8 @@ public final class DbExecutor implements AutoCloseable {
             pool.execute(() -> {
                 try {
                     future.complete(task.call());
-                } catch (Exception e) {
-                    future.completeExceptionally(e);
+                } catch (Throwable t) { // Error(LinkageError 등)도 future로 넘겨야 호출자가 영원히 기다리지 않는다
+                    future.completeExceptionally(t);
                 }
             });
         } catch (RejectedExecutionException e) {
