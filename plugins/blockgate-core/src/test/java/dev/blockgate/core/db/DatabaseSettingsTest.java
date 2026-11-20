@@ -71,4 +71,15 @@ class DatabaseSettingsTest {
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage("DB URL이 설정되지 않았습니다 (BLOCKGATE_DB_URL 또는 config.yml database.url)");
     }
+
+    @Test
+    @DisplayName("T5 / AC-2: pool-size 0이면 실패, 1은 허용")
+    void poolSizeMustBeAtLeastOne() {
+        String url = "jdbc:postgresql://cfg-host:5432/cfgdb";
+
+        assertThatThrownBy(() -> DatabaseSettings.resolve(Map.of(), config(url, "u", "p", 0)))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("database.pool-size는 1 이상이어야 합니다 (현재: 0)");
+        assertThat(DatabaseSettings.resolve(Map.of(), config(url, "u", "p", 1)).poolSize()).isEqualTo(1);
+    }
 }
