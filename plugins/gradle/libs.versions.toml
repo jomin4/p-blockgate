@@ -1,0 +1,32 @@
+# 모든 버전은 여기서만 고정한다 (latest·+·범위 금지). 변경은 docs/10-version-policy.md 절차로.
+[versions]
+paper-api = "26.1.2.build.74-stable"   # 서버 빌드(infra/*/compose.yaml PAPER_BUILD)와 같게
+hikaricp = "7.1.0"
+postgresql = "42.7.14"
+flyway = "13.12.1"
+junit = "6.1.2"                        # MockBukkit 4.115.0이 쓰는 JUnit Jupiter 버전
+assertj = "3.27.7"
+mockito = "5.24.0"
+mockbukkit = "4.115.0"
+testcontainers = "2.0.5"
+jacoco = "0.8.16"
+shadow = "9.6.1"
+
+[libraries]
+paper-api = { module = "io.papermc.paper:paper-api", version.ref = "paper-api" }
+hikaricp = { module = "com.zaxxer:HikariCP", version.ref = "hikaricp" }
+postgresql = { module = "org.postgresql:postgresql", version.ref = "postgresql" }
+flyway-core = { module = "org.flywaydb:flyway-core", version.ref = "flyway" }
+flyway-postgresql = { module = "org.flywaydb:flyway-database-postgresql", version.ref = "flyway" }
+junit-bom = { module = "org.junit:junit-bom", version.ref = "junit" }
+junit-jupiter = { module = "org.junit.jupiter:junit-jupiter" }
+junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher" }
+assertj = { module = "org.assertj:assertj-core", version.ref = "assertj" }
+mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockito" }
+mockbukkit = { module = "org.mockbukkit.mockbukkit:mockbukkit-v26.1.2", version.ref = "mockbukkit" }
+testcontainers-bom = { module = "org.testcontainers:testcontainers-bom", version.ref = "testcontainers" }
+testcontainers-postgresql = { module = "org.testcontainers:testcontainers-postgresql" }
+testcontainers-junit = { module = "org.testcontainers:testcontainers-junit-jupiter" }
+
+[plugins]
+shadow = { id = "com.gradleup.shadow", version.ref = "shadow" }

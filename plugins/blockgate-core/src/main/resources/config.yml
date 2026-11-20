@@ -1,0 +1,7 @@
+# BlockGateCore 설정. DB 접속 정보는 환경변수가 우선한다:
+#   BLOCKGATE_DB_URL / BLOCKGATE_DB_USER / BLOCKGATE_DB_PASSWORD (compose가 주입)
+database:
+  url: ""
+  user: "blockgate"
+  password: ""
+  pool-size: 4
