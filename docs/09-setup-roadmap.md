@@ -48,15 +48,15 @@
 | 3 | 레포 설정: Squash 머지만 허용, Allow auto-merge ON, 자동 head 브랜치 삭제 OFF |
 | 4 | 라벨 생성: `.github/labels.yml` 기준 (기본 라벨은 삭제) |
 | 5 | GitHub Project(Board) 생성: Status = Todo / In Progress / Playtest / Done, 레포에 연결 |
-| 6 | 👤 Project 내장 Workflows: "Item closed → Done" ON, "Pull request merged → Done" OFF, "Item added → Todo" ON |
+| 6 | 👤 Project 내장 Workflows: "Item closed → Done" ON, "Pull request merged → Done" OFF, "Item added → Todo" ON (두 workflow 모두 대상은 issue만) |
 | 7 | `.github/project.json`에 project number·ID·Status 필드 ID·옵션 ID 기록 |
 | 8 | `scripts/kanban.mjs` 구현: `add <issue#>`, `move <issue#> "<Status>"` (gh CLI 사용) → 동작 확인 |
 | 9 | Rulesets(main): PR 필수, 승인 0, Squash만, force-push·삭제 금지 (필수 상태 체크는 Phase 7에서 추가) |
 | 10 | collaborator 초대 (Write 권한) |
 | 11 | 2번 push 이후 main 직접 커밋은 훅이 막는다 → 7~8번 결과물(`.github/project.json`, `scripts/kanban.mjs`)은 `[작업] Phase 1 마무리` 이슈 → `chore/<issue#>-phase-1-github` 브랜치 → review → PR로 반영 (첫 워크플로우 연습) |
 
-- [ ] ✅ `gh repo view`, 라벨 목록, 프로젝트 보드, Rulesets 조회 결과 보고
-- [ ] ✅ 테스트 이슈로 `kanban.mjs add/move` 동작 확인 후 테스트 이슈 삭제
+- [x] ✅ `gh repo view`, 라벨 목록, 프로젝트 보드, Rulesets 조회 결과 보고
+- [x] ✅ 테스트 이슈로 `kanban.mjs add/move` 동작 확인 후 테스트 이슈 삭제
 
 ## Phase 2. 로컬 개발 인프라 (`infra/dev`)
 
@@ -162,7 +162,7 @@
 | Phase | 상태 | PR |
 |---|---|---|
 | 0. 사전 점검 | ✅ | — |
-| 1. Git · GitHub | ⬜ | |
+| 1. Git · GitHub | ✅ (collaborator 초대는 추후) | #3 |
 | 2. 로컬 개발 인프라 | ⬜ | |
 | 3. VitaminMCP 검증 | ⬜ | |
 | 4. 플러그인 골격 + 테스트 | ⬜ | |
