@@ -44,4 +44,18 @@ class DbExecutorTest {
                 .havingCause()
                 .isSameAs(boom);
     }
+
+    @Test
+    @DisplayName("T11 / AC-5: 닫힌 실행기에 맡기면 IllegalStateException 실패 future")
+    void submitAfterCloseFails() {
+        executor.close();
+
+        var future = executor.submit(() -> "never");
+
+        assertThat(future)
+                .failsWithin(5, TimeUnit.SECONDS)
+                .withThrowableOfType(java.util.concurrent.ExecutionException.class)
+                .havingCause()
+                .isInstanceOf(IllegalStateException.class);
+    }
 }
