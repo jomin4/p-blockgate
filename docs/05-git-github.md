@@ -71,6 +71,7 @@
 | Done | 이슈 닫힘 | 프로젝트 내장 자동화 "Item closed → Done" |
 
 - 내장 자동화 "Pull request merged → Done"은 **끈다** (머지 ≠ 완료).
+- "Item closed → Done"·"Item added → Todo"의 대상은 **issue만** (PR은 보드에 올리지 않는다).
 - 상태 이동은 `scripts/kanban.mjs`로 한다 (Phase 1에서 구현):
   `node scripts/kanban.mjs add <issue#>` / `node scripts/kanban.mjs move <issue#> "<Status>"`
 - 프로젝트 ID·필드 ID는 `.github/project.json`에 저장 (비밀 아님, 커밋).
