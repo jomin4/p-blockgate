@@ -53,4 +53,15 @@ class MigratorIT {
             assertThat(rs.getString(1)).isEqualTo("value");
         }
     }
+
+    @Test
+    @DisplayName("T8 / AC-4: 두 번째 실행(서버 재시작)은 적용 0건, 스키마 버전 유지")
+    void secondRunAppliesNothing() {
+        MigrationResult first = Migrator.migrate(ds, getClass().getClassLoader());
+        MigrationResult second = Migrator.migrate(ds, getClass().getClassLoader());
+
+        assertThat(first.migrationsApplied()).isEqualTo(1);
+        assertThat(second.migrationsApplied()).isZero();
+        assertThat(second.schemaVersion()).isEqualTo("1");
+    }
 }
