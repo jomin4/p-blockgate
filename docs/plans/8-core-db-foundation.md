@@ -48,7 +48,7 @@
 | T12 | 연결할 수 없는 DB 설정으로 활성화 → `onEnable` 예외 없음, SEVERE `DB 연결 실패:` 로그, 플러그인 비활성화 | AC-6 | 실패·예외 | 단위(MockBukkit) | ☑ |
 | T13 | 실제 DB로 활성화 → INFO `DB 연결 성공 (스키마 버전 1)`, 플러그인 활성 유지 | AC-6 | 정상 | 통합(MockBukkit + Testcontainers) | ☑ |
 | T14 | 비활성화 → 풀 닫힘 | AC-7 | 정상 | 통합(MockBukkit + Testcontainers) | ☑ |
-| T15 | `deployDev` → 서버 로그 2줄 확인, `exceptions_recent` 0건 (3회 연속) | AC-8 | 정상 | E2E(VitaminMCP, 로그 확인) | ☐ |
+| T15 | `deployDev` → 서버 로그 2줄 확인, `exceptions_recent` 0건 (3회 연속) | AC-8 | 정상 | E2E(VitaminMCP, 로그 확인) | ☑ |
 | T16 (추가) | 배포 JAR(shadowJar)의 Flyway 플러그인 서비스 목록이 flyway-core·flyway-database-postgresql 항목을 relocate된 이름으로 모두 포함 | AC-8 | 실패·예외 | 통합(빌드 산출물) | ☑ |
 | T17 (추가) | 작업이 `Error`(예: `LinkageError`)를 던져도 같은 원인의 실패 future가 된다 | AC-5 | 실패·예외 | 단위(JUnit) | ☑ |
 | T18 (추가) | 초기화 도중(풀 생성 직후, 마이그레이션 전) 비활성화 → 비활성화가 끝나면 그 풀은 닫혀 있고, 실행기는 종료되고, `dataSource()`는 null | AC-7 | MC 특수 | 통합(MockBukkit + Testcontainers) | ☑ |
