@@ -1,0 +1,5 @@
+name: BlockGateCore
+version: '${version}'
+main: dev.blockgate.core.BlockGateCore
+api-version: '26.1.2'
+description: BlockGate 공통 기반 (DB 풀, 마이그레이션, 비동기 DB 실행기)
