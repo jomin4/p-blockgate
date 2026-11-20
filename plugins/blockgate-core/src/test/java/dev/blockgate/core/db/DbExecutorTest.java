@@ -28,4 +28,20 @@ class DbExecutorTest {
 
         assertThat(worker).startsWith("BlockGateCore-DB-").isNotEqualTo(caller);
     }
+
+    @Test
+    @DisplayName("T10 / AC-5: 작업 예외는 같은 원인을 가진 실패 future가 된다")
+    void exceptionBecomesFailedFuture() {
+        var boom = new java.sql.SQLException("boom");
+
+        var future = executor.submit(() -> {
+            throw boom;
+        });
+
+        assertThat(future)
+                .failsWithin(5, TimeUnit.SECONDS)
+                .withThrowableOfType(java.util.concurrent.ExecutionException.class)
+                .havingCause()
+                .isSameAs(boom);
+    }
 }
