@@ -53,6 +53,23 @@ class BlockGateCoreTest {
         });
     }
 
+    @Test
+    @DisplayName("T19 / AC-2, AC-6: URL 미설정으로 활성화 → SEVERE 안내, 비활성화, 설정은 메인 스레드에서 해석(DB 실행기 미생성)")
+    void failsFastOnMissingUrl() {
+        BlockGateCore plugin = MockBukkit.load(BlockGateCore.class, Map.<String, String>of());
+        List<LogRecord> logs = capture(plugin);
+
+        assertThat(plugin.dbExecutor()).as("설정 오류면 DB 스레드를 만들지 않는다").isNull();
+        server.getScheduler().performOneTick();
+
+        assertThat(plugin.isEnabled()).isFalse();
+        assertThat(logs).anySatisfy(r -> {
+            assertThat(r.getLevel()).isEqualTo(Level.SEVERE);
+            assertThat(r.getMessage()).isEqualTo(
+                    "DB 연결 실패: DB URL이 설정되지 않았습니다 (BLOCKGATE_DB_URL 또는 config.yml database.url)");
+        });
+    }
+
     private static List<LogRecord> capture(BlockGateCore plugin) {
         List<LogRecord> records = new CopyOnWriteArrayList<>();
         plugin.getLogger().addHandler(new Handler() {
