@@ -35,7 +35,7 @@
 | T | 시나리오 | AC | 종류 | 레벨 | 완료 |
 |---|---|---|---|---|---|
 | T1 | 환경변수가 없으면 config.yml 값(url·user·password·pool-size)을 쓴다 | AC-1 | 정상 | 단위(JUnit) | ☑ |
-| T2 | 환경변수가 있으면 config.yml보다 우선한다 (빈 문자열 환경변수는 무시) | AC-1 | 정상 | 단위(JUnit) | ☐ |
+| T2 | 환경변수가 있으면 config.yml보다 우선한다 (빈 문자열 환경변수는 무시) | AC-1 | 정상 | 단위(JUnit) | ☑ |
 | T3 | pool-size 미설정 → 4 | AC-1 | 경계 | 단위(JUnit) | ☐ |
 | T4 | URL이 어디에도 없으면 AC-2 메시지로 실패 | AC-2 | 실패·예외 | 단위(JUnit) | ☐ |
 | T5 | pool-size 0 → AC-2 메시지로 실패 (1은 허용) | AC-2 | 경계 | 단위(JUnit) | ☐ |
