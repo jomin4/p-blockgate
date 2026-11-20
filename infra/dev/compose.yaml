@@ -15,6 +15,7 @@ services:
         condition: service_healthy
       vitaminmcp-proxy:
         condition: service_started
+        restart: true # compose로 proxy를 재시작하면 mc도 다시 붙인다
     environment:
       EULA: ${MC_EULA:?MC_EULA를 .env에 설정하세요 (개발자 동의 후 TRUE)}
       TYPE: PAPER
@@ -46,7 +47,8 @@ services:
   # agent는 네임스페이스 loopback(127.0.0.1:25585)에만 열린다 (그 밖은 TLS 필수) →
   # 25586에서 받아 127.0.0.1:25585로 넘기고, 호스트에는 127.0.0.1:25585로만 공개한다.
   # 25586은 compose 내부 네트워크에서는 평문으로 닿지만 agent 토큰으로 보호된다 (로컬 전용).
-  # 이 컨테이너만 따로 재시작하지 않는다 (mc의 네트워크가 끊긴다) — 필요하면 `up -d`.
+  # proxy가 혼자 다시 시작되면(Docker 자체 재시작 등) mc의 네트워크가 끊긴다 → `restart mc`로 복구.
+  # (compose로 proxy를 재시작할 때는 mc의 depends_on.restart로 함께 다시 붙는다)
   vitaminmcp-proxy:
     image: alpine/socat:1.8.1.1
     container_name: blockgate-dev-vitaminmcp-proxy
