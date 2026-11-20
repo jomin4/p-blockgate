@@ -16,6 +16,9 @@ public record DatabaseSettings(String url, String user, String password, int poo
         if (url == null || url.isBlank()) {
             throw new IllegalStateException("DB URL이 설정되지 않았습니다 (BLOCKGATE_DB_URL 또는 config.yml database.url)");
         }
+        if (poolSize < 1) {
+            throw new IllegalStateException("database.pool-size는 1 이상이어야 합니다 (현재: " + poolSize + ")");
+        }
     }
 
     public static DatabaseSettings resolve(Map<String, String> env, ConfigurationSection config) {
