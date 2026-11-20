@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @Tag("unit")
 class DatabaseSettingsTest {
@@ -59,5 +60,15 @@ class DatabaseSettingsTest {
         DatabaseSettings settings = DatabaseSettings.resolve(Map.of(), yaml);
 
         assertThat(settings.poolSize()).isEqualTo(4);
+    }
+
+    @Test
+    @DisplayName("T4 / AC-2: URL이 어디에도 없으면 안내 메시지와 함께 실패")
+    void failsWhenUrlMissing() {
+        var yaml = config(null, "cfg-user", "cfg-pass", 4);
+
+        assertThatThrownBy(() -> DatabaseSettings.resolve(Map.of("BLOCKGATE_DB_URL", " "), yaml))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("DB URL이 설정되지 않았습니다 (BLOCKGATE_DB_URL 또는 config.yml database.url)");
     }
 }
