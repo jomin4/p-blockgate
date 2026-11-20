@@ -11,7 +11,8 @@ GitHub Projects 칸반 상태를 바꾸는 도구. 스킬들이 이 인터페이
 | `node scripts/kanban.mjs show <이슈번호>` | 현재 Status 출력 |
 
 ### 구현 명세
-- `gh` CLI만 사용 (`gh project item-add`, `gh project item-list --format json`, `gh project item-edit`).
+- `gh` CLI만 사용 (`gh project item-add`, `gh project item-edit`, 아이템 조회는 `gh api graphql`의 이슈 `projectItems`).
+  - `gh project item-list`는 보드 전체를 페이지 단위로 받아야 해서, 이슈 하나만 조회하는 graphql을 쓴다.
 - 프로젝트 번호·ID·Status 필드 ID·옵션 ID는 `.github/project.json`에서 읽는다 (Phase 1에서 생성·커밋).
 - 이슈가 프로젝트에 없으면 `move`가 먼저 추가한다.
 - 실패 시 exit 1 + 원인 메시지. 성공 시 한 줄 출력 (`#12 → In Progress`).

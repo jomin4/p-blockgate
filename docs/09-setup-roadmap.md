@@ -48,7 +48,7 @@
 | 3 | 레포 설정: Squash 머지만 허용, Allow auto-merge ON, 자동 head 브랜치 삭제 OFF |
 | 4 | 라벨 생성: `.github/labels.yml` 기준 (기본 라벨은 삭제) |
 | 5 | GitHub Project(Board) 생성: Status = Todo / In Progress / Playtest / Done, 레포에 연결 |
-| 6 | 👤 Project 내장 Workflows: "Item closed → Done" ON, "Pull request merged → Done" OFF, "Item added → Todo" ON (두 workflow 모두 대상은 issue만) |
+| 6 | 👤 Project 내장 Workflows: "Item closed → Done" ON, "Pull request merged → Done" OFF, "Item added → Todo" ON (Item closed·Item added 대상은 issue만) |
 | 7 | `.github/project.json`에 project number·ID·Status 필드 ID·옵션 ID 기록 |
 | 8 | `scripts/kanban.mjs` 구현: `add <issue#>`, `move <issue#> "<Status>"` (gh CLI 사용) → 동작 확인 |
 | 9 | Rulesets(main): PR 필수, 승인 0, Squash만, force-push·삭제 금지 (필수 상태 체크는 Phase 7에서 추가) |

@@ -29,7 +29,7 @@ function gh(args) {
     return execFileSync('gh', args, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] });
   } catch (e) {
     const detail = (e.stderr || e.message || '').toString().trim();
-    fail(`gh ${args.slice(0, 3).join(' ')} 실패: ${detail}`);
+    fail(`gh ${args.slice(0, 2).join(' ')} 실패: ${detail}`);
   }
 }
 
