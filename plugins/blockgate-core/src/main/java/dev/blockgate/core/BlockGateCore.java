@@ -10,6 +10,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
 import java.util.logging.Level;
 
 /**
@@ -19,8 +20,11 @@ import java.util.logging.Level;
 public class BlockGateCore extends JavaPlugin {
 
     private static final int DB_THREADS = 2;
+    private static final java.time.Duration SHUTDOWN_TIMEOUT = java.time.Duration.ofSeconds(10);
 
     private final Map<String, String> env;
+    private final Function<DatabaseSettings, HikariDataSource> poolOpener;
+    private volatile boolean shuttingDown;
     private DbExecutor dbExecutor;
     private volatile HikariDataSource dataSource;
     private CompletableFuture<MigrationResult> startup;
@@ -31,7 +35,13 @@ public class BlockGateCore extends JavaPlugin {
 
     /** 테스트용: 환경변수를 주입한다 (MockBukkit.load가 public 생성자를 요구). */
     public BlockGateCore(Map<String, String> env) {
+        this(env, DataSourceFactory::create);
+    }
+
+    /** 테스트용: 풀 생성도 주입한다 (초기화 도중 비활성화 재현용). */
+    public BlockGateCore(Map<String, String> env, Function<DatabaseSettings, HikariDataSource> poolOpener) {
         this.env = Map.copyOf(env);
+        this.poolOpener = poolOpener;
     }
 
     @Override
@@ -39,25 +49,46 @@ public class BlockGateCore extends JavaPlugin {
         saveDefaultConfig();
         dbExecutor = new DbExecutor(DB_THREADS);
         startup = dbExecutor.submit(this::connectAndMigrate)
-                .whenComplete((result, error) ->
-                        getServer().getScheduler().runTask(this, () -> onStartupFinished(result, error)));
+                .whenComplete((result, error) -> {
+                    if (!shuttingDown) { // 비활성화된 플러그인으로는 작업을 예약할 수 없다
+                        getServer().getScheduler().runTask(this, () -> onStartupFinished(result, error));
+                    }
+                });
     }
 
     @Override
     public void onDisable() {
+        shuttingDown = true;
+        // 진행 중인 DB 작업(초기화 포함)이 끝나기를 기다린 뒤 풀을 닫는다
+        if (dbExecutor != null) {
+            dbExecutor.closeAndAwait(SHUTDOWN_TIMEOUT);
+        }
         HikariDataSource ds = dataSource;
+        dataSource = null;
         if (ds != null) {
             ds.close();
-        }
-        if (dbExecutor != null) {
-            dbExecutor.close();
         }
     }
 
     private MigrationResult connectAndMigrate() {
         DatabaseSettings settings = DatabaseSettings.resolve(env, getConfig());
-        dataSource = DataSourceFactory.create(settings);
-        return Migrator.migrate(dataSource, getClassLoader());
+        HikariDataSource ds = poolOpener.apply(settings);
+        try {
+            abortIfShuttingDown();
+            MigrationResult result = Migrator.migrate(ds, getClassLoader());
+            abortIfShuttingDown();
+            dataSource = ds; // 마이그레이션이 끝난 풀만 공개한다
+            return result;
+        } catch (Throwable t) {
+            ds.close();
+            throw t;
+        }
+    }
+
+    private void abortIfShuttingDown() {
+        if (shuttingDown) {
+            throw new IllegalStateException("플러그인 종료 중이라 DB 초기화를 중단했습니다");
+        }
     }
 
     private void onStartupFinished(MigrationResult result, Throwable error) {
@@ -73,6 +104,15 @@ public class BlockGateCore extends JavaPlugin {
     /** 초기화된 DB 풀 (초기화 전·실패 시 null). */
     HikariDataSource dataSource() {
         return dataSource;
+    }
+
+    /** 비활성화(종료)가 시작됐는지. */
+    boolean isShuttingDown() {
+        return shuttingDown;
+    }
+
+    DbExecutor dbExecutor() {
+        return dbExecutor;
     }
 
     /** 테스트용: 비동기 초기화(결과 처리 예약까지)가 끝나면 완료되는 future. */
