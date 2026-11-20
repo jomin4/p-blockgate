@@ -4,6 +4,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -26,13 +27,17 @@ public final class DbExecutor implements AutoCloseable {
 
     public <T> CompletableFuture<T> submit(Callable<T> task) {
         CompletableFuture<T> future = new CompletableFuture<>();
-        pool.execute(() -> {
-            try {
-                future.complete(task.call());
-            } catch (Exception e) {
-                future.completeExceptionally(e);
-            }
-        });
+        try {
+            pool.execute(() -> {
+                try {
+                    future.complete(task.call());
+                } catch (Exception e) {
+                    future.completeExceptionally(e);
+                }
+            });
+        } catch (RejectedExecutionException e) {
+            future.completeExceptionally(new IllegalStateException("DB 실행기가 이미 닫혔습니다", e));
+        }
         return future;
     }
 
