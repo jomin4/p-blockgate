@@ -1,0 +1,6 @@
+{
+  "file": "/data/plugins/VitaminMCP/config.yml",
+  "ops": [
+    { "$set": { "path": "$.read-only", "value": false, "value-type": "bool" } }
+  ]
+}

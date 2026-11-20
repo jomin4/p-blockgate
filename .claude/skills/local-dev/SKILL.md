@@ -13,8 +13,10 @@ Compose 프로젝트: `blockgate-dev` / 위치: `infra/dev/` (Phase 2 이후 사
 | 상태 | `docker compose -p blockgate-dev ps` |
 | 로그 | `docker compose -p blockgate-dev logs -f --tail 100 mc` |
 | 기동 확인 | 로그에서 `Done (` |
-| 재시작 | `docker compose -p blockgate-dev restart mc` (`/reload` 금지) |
+| 재시작 | `docker compose -p blockgate-dev restart mc` (`/reload` 금지). `vitaminmcp-proxy`는 mc 네트워크의 소유자다. compose로 proxy를 재시작하면 mc도 함께 다시 붙는다(`depends_on.restart`) |
 | 중지 | `docker compose -p blockgate-dev stop` |
+| VitaminMCP 플러그인 받기 | `mkdir -p ~/.vitaminmcp/agents` → `gh release download 3.2.2 -R Backas03/VitaminMCP -p VitaminMCP.jar -D infra/dev/plugins-extra --clobber` → SHA-256이 `docs/01-tech-stack.md` 값과 같은지 확인 → 시작 → **첫 기동 뒤 한 번 재시작**(read-only 해제 패치 적용) |
+| VitaminMCP 연결 확인 | `session_start`(인자 없음) → 응답의 `readOnly: false` 확인. 회귀용 `plugins/e2e/scenarios/smoke-help.json` |
 | 플러그인 반영 | `cd plugins && ./gradlew deployDev` |
 | 콘솔 명령 | `docker compose -p blockgate-dev exec mc rcon-cli <명령>` |
 | DB 접속 | `docker compose -p blockgate-dev exec postgres psql -U blockgate blockgate` |
@@ -28,8 +30,10 @@ Compose 프로젝트: `blockgate-dev` / 위치: `infra/dev/` (Phase 2 이후 사
 ## 문제 해결
 | 증상 | 확인 |
 |---|---|
-| 컨테이너가 안 뜸 | Docker 실행 여부, `.env` 존재, 25565/5432 포트 사용 중인지 |
+| 컨테이너가 안 뜸 | Docker 실행 여부, `.env` 존재, 25565·25575·25585·5432 포트 사용 중인지 |
 | 플러그인 미적용 | `infra/dev/data/plugins/`에 JAR가 있는지, 로그의 `Enabling` 줄 |
+| VitaminMCP 연결 실패 | `curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:25585/mcp`가 401이면 정상. 000이면 `docker compose -p blockgate-dev restart mc` (proxy가 혼자 다시 시작돼 mc가 옛 네트워크에 남은 경우. `up -d`로는 복구되지 않는다) |
+| VitaminMCP read-only | 로그에 `endpoint listening ... (read-only)` → 한 번 더 재시작 (패치는 설정 파일이 생긴 뒤 기동부터 적용) |
 | Java 오류 | 이미지 태그가 Java 25인지 (`docs/01-tech-stack.md`) |
 
 `infra/dev/data/`, `.env`는 커밋하지 않는다.

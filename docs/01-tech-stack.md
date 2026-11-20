@@ -16,7 +16,8 @@
 | | Mockito | 5.x | `libs.versions.toml` |
 | | Testcontainers | 세팅 시점 최신 stable | `libs.versions.toml` |
 | | JaCoCo | Java 25 지원 버전 | `build.gradle.kts` |
-| E2E | VitaminMCP | Phase 3 검증 후 고정 | `.mcp.json`, `infra/dev` 플러그인 |
+| E2E | VitaminMCP | **3.2.2** (Phase 3 검증): npm `vitaminmcp@3.2.2` + 플러그인 `VitaminMCP.jar` 3.2.2 (SHA-256 `338dd33b334b14c3dfd7100e5cd27b0e07d502f06d6011f109a00fe2b4cafbb9`) | `.mcp.json`, `infra/dev/plugins-extra/` (받는 법: local-dev 스킬) |
+| | alpine/socat | `1.8.1.1` (VitaminMCP agent 포트 중계, 로컬 전용) | `infra/dev/compose.yaml` |
 | 인프라 | Terraform | OCI native backend 지원 버전 (1.12+) | `required_version` |
 | | OCI provider | `oracle/oci` 최신 stable | `required_providers` |
 

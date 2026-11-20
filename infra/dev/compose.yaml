@@ -7,9 +7,15 @@ services:
   mc:
     image: itzg/minecraft-server:2026.11.0-java25
     container_name: blockgate-dev-mc
+    # 네트워크 네임스페이스는 vitaminmcp-proxy가 소유하고 mc는 합류한다 (포트도 proxy에서 공개).
+    # 합류한 쪽(mc)은 재시작해도 소유자의 네임스페이스에 다시 붙으므로 `restart mc`가 안전하다.
+    network_mode: "service:vitaminmcp-proxy"
     depends_on:
       postgres:
         condition: service_healthy
+      vitaminmcp-proxy:
+        condition: service_started
+        restart: true # compose로 proxy를 재시작하면 mc도 다시 붙인다
     environment:
       EULA: ${MC_EULA:?MC_EULA를 .env에 설정하세요 (개발자 동의 후 TRUE)}
       TYPE: PAPER
@@ -21,18 +27,37 @@ services:
       ENABLE_RCON: "TRUE"
       RCON_PASSWORD: ${MC_RCON_PASSWORD:?MC_RCON_PASSWORD 필요}
       TZ: Asia/Seoul
+      # 로컬 전용 설정 패치 (VitaminMCP read-only 해제, bukkit connection-throttle 해제). 대상 파일이 생긴 뒤 기동부터 적용
+      PATCH_DEFINITIONS: /patches
       # 플러그인이 읽는 DB 접속 정보 (키 이름은 docs/01 "설정" 행의 계약)
       BLOCKGATE_DB_URL: jdbc:postgresql://postgres:5432/${DB_NAME:-blockgate}
       BLOCKGATE_DB_USER: ${DB_USER:-blockgate}
       BLOCKGATE_DB_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD 필요}
-    ports:
-      - "127.0.0.1:25565:25565"
-      - "127.0.0.1:25575:25575" # RCON (로컬 전용)
     volumes:
       - ./data:/data
       - ./plugins-extra:/plugins:ro # VitaminMCP 등 외부 플러그인 JAR (gitignore) → /data/plugins로 동기화
+      - ./patches:/patches:ro
+      # VitaminMCP local-handshake: 플러그인이 /data/.vitaminmcp/agents에 쓰는 접속 정보를
+      # 호스트 MCP 서버가 읽는 ~/.vitaminmcp/agents로 연결 → session_start 무인자 연결
+      - ~/.vitaminmcp/agents:/data/.vitaminmcp/agents
     tty: true
     stdin_open: true
+
+  # mc와 공유하는 네트워크 네임스페이스의 소유자이자 VitaminMCP agent 중계.
+  # agent는 네임스페이스 loopback(127.0.0.1:25585)에만 열린다 (그 밖은 TLS 필수) →
+  # 25586에서 받아 127.0.0.1:25585로 넘기고, 호스트에는 127.0.0.1:25585로만 공개한다.
+  # 25586은 compose 내부 네트워크에서는 평문으로 닿지만 agent 토큰으로 보호된다 (로컬 전용).
+  # proxy가 혼자 다시 시작되면(Docker 자체 재시작 등) mc의 네트워크가 끊긴다 → `restart mc`로 복구.
+  # (compose로 proxy를 재시작할 때는 mc의 depends_on.restart로 함께 다시 붙는다)
+  vitaminmcp-proxy:
+    image: alpine/socat:1.8.1.1
+    container_name: blockgate-dev-vitaminmcp-proxy
+    command: ["TCP-LISTEN:25586,fork,reuseaddr", "TCP:127.0.0.1:25585"]
+    ports:
+      - "127.0.0.1:25565:25565" # Minecraft (mc)
+      - "127.0.0.1:25575:25575" # RCON (mc, 로컬 전용)
+      - "127.0.0.1:25585:25586" # VitaminMCP agent (로컬 전용)
+    restart: unless-stopped
 
   postgres:
     image: postgres:17.12

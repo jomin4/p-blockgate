@@ -1,0 +1,7 @@
+[
+  {"action": "spawn", "bot": "bg_smoke"},
+  {"action": "command", "bot": "bg_smoke", "command": "help"},
+  {"action": "assert_message", "bot": "bg_smoke", "contains": "Help: Index"},
+  {"action": "assert_player", "bot": "bg_smoke", "online": true, "gameMode": "SURVIVAL"},
+  {"action": "despawn", "bot": "bg_smoke"}
+]
