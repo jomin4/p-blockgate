@@ -1,0 +1,18 @@
+# Phase 1에서 이 목록대로 라벨을 만든다 (기본 라벨은 삭제).
+# gh label create "<name>" --color <color> --description "<description>" --force
+- { name: "area:plugin",           color: "1d76db", description: "plugins/** 플러그인 코드" }
+- { name: "area:server",           color: "0e8a16", description: "infra/prod/server/** 운영 서버 설정" }
+- { name: "area:infra",            color: "5319e7", description: "infra/prod/terraform/** OCI 인프라" }
+- { name: "area:repo",             color: "6a737d", description: "하네스·CI·infra/dev·레포 공통" }
+- { name: "area:docs",             color: "c5def5", description: "docs/** 문서" }
+- { name: "type:feature",          color: "a2eeef", description: "새 기능·변경" }
+- { name: "type:bug",              color: "d73a4a", description: "버그" }
+- { name: "type:task",             color: "fef2c0", description: "기능이 아닌 작업" }
+- { name: "type:refactor",         color: "e4e669", description: "동작 변화 없는 구조 개선" }
+- { name: "priority:P0",           color: "b60205", description: "즉시 (크래시·데이터 손상·접속 불가)" }
+- { name: "priority:P1",           color: "d93f0b", description: "이번 작업" }
+- { name: "priority:P2",           color: "fbca04", description: "나중에" }
+- { name: "status:blocked",        color: "000000", description: "다른 작업·결정 대기" }
+- { name: "status:needs-feedback", color: "f9d0c4", description: "개발자 피드백 대기" }
+- { name: "db-migration",          color: "bfd4f2", description: "Flyway 마이그레이션 포함" }
+- { name: "breaking-change",       color: "b60205", description: "호환성 깨지는 변경" }

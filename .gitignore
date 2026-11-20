@@ -1,0 +1,46 @@
+# ── 비밀값 (절대 커밋 금지) ──
+.env
+.env.*
+!.env.example
+*.tfvars
+!*.tfvars.example
+*.pem
+*.key
+oci_api_key*
+id_rsa*
+id_ed25519*
+
+# ── Terraform ──
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+tfplan
+crash.log
+.terraform.tfstate.lock.info
+
+# ── Claude Code 개인 설정·로컬 상태 ──
+.claude/settings.local.json
+.claude/state/
+
+# ── 로컬 개발 서버 데이터 ──
+infra/dev/data/
+infra/dev/plugins-extra/
+
+# ── Gradle / Java ──
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+out/
+*.class
+hs_err_pid*
+
+# ── IDE / OS ──
+.idea/
+*.iml
+.vscode/
+.DS_Store
+Thumbs.db
+
+# ── Node ──
+node_modules/
