@@ -48,10 +48,17 @@
 | T12 | 연결할 수 없는 DB 설정으로 활성화 → `onEnable` 예외 없음, SEVERE `DB 연결 실패:` 로그, 플러그인 비활성화 | AC-6 | 실패·예외 | 단위(MockBukkit) | ☑ |
 | T13 | 실제 DB로 활성화 → INFO `DB 연결 성공 (스키마 버전 1)`, 플러그인 활성 유지 | AC-6 | 정상 | 통합(MockBukkit + Testcontainers) | ☑ |
 | T14 | 비활성화 → 풀 닫힘 | AC-7 | 정상 | 통합(MockBukkit + Testcontainers) | ☑ |
-| T15 | `deployDev` → 서버 로그 2줄 확인, `exceptions_recent` 0건 | AC-8 | 정상 | E2E(VitaminMCP, 로그 확인) | ☑ |
+| T15 | `deployDev` → 서버 로그 2줄 확인, `exceptions_recent` 0건 (3회 연속) | AC-8 | 정상 | E2E(VitaminMCP, 로그 확인) | ☐ |
 | T16 (추가) | 배포 JAR(shadowJar)의 Flyway 플러그인 서비스 목록이 flyway-core·flyway-database-postgresql 항목을 relocate된 이름으로 모두 포함 | AC-8 | 실패·예외 | 통합(빌드 산출물) | ☑ |
+| T17 (추가) | 작업이 `Error`(예: `LinkageError`)를 던져도 같은 원인의 실패 future가 된다 | AC-5 | 실패·예외 | 단위(JUnit) | ☐ |
+| T18 (추가) | 초기화 도중(풀 생성 직후, 마이그레이션 전) 비활성화 → 비활성화가 끝나면 그 풀은 닫혀 있고, 실행기는 종료되고, `dataSource()`는 null | AC-7 | MC 특수 | 통합(MockBukkit + Testcontainers) | ☐ |
+| T19 (추가) | URL 미설정으로 활성화 → SEVERE `DB 연결 실패: DB URL이 설정되지 않았습니다 (…)`, 플러그인 비활성화 (설정 해석은 메인 스레드에서) | AC-2, AC-6 | 실패·예외 | 단위(MockBukkit) | ☐ |
+| T20 (추가) | `DatabaseSettings.toString()`에 비밀번호가 드러나지 않는다 (`***`) | AC-1 | 보안 | 단위(JUnit) | ☐ |
 
 > T16은 T15 첫 실행에서 발견: Shadow 9의 기본 `duplicatesStrategy = EXCLUDE` 때문에 서비스 파일이 병합되지 않아, 실서버에서 Flyway가 `NullPointerException`(PluginRegister)으로 실패했다. 서버 없이 CI에서 잡도록 추가.
+> T17~T20은 리뷰(quality)에서 발견: `Error`가 나면 future가 영원히 미완료, 초기화 중 비활성화 시 풀 누수, DB 스레드에서 `getConfig()` 호출, record `toString()`의 비밀번호 노출. AC는 그대로이고 기존 AC를 더 엄밀하게 검증하는 항목이다.
+> T15는 봇 시나리오가 아니라 서버 로그와 `exceptions_recent`로 확인하는 항목이다 (플러그인에 플레이어가 겪는 흐름이 아직 없음). 3회 실행 증거는 `.claude/state/verify-*.md`와 PR "검증 결과"에 남긴다.
+> T4·T2의 "비어 있음"은 공백만 있는 값도 포함한다 (`isBlank`).
 
 ## 5. 설계 메모
 
@@ -67,7 +74,9 @@
 
 | 리스크 | 대응 |
 |---|---|
-| Shadow relocate 뒤 Flyway·pgJDBC의 ServiceLoader가 깨질 수 있음 | `mergeServiceFiles()` + T15(실서버)로 확인 |
+| Shadow relocate 뒤 Flyway·pgJDBC의 ServiceLoader가 깨질 수 있음 | 실제로 깨졌음(T15 첫 실행) → 서비스 파일만 `duplicatesStrategy = INCLUDE` + `mergeServiceFiles()`, T16이 CI에서 검사 |
+| 초기화 중 비활성화(서버 종료 등) | 비활성화는 실행기 종료를 제한 시간(10초) 기다린 뒤 풀을 닫는다. 초기화는 종료 중이면 만든 풀을 닫고 중단 (T18) |
+| T12 단위 테스트가 1초를 넘음 (약 3.5초) | 대부분 MockBukkit 첫 기동 비용(같은 기동 뒤 T19는 빠름). 거부된 TCP 연결은 즉시 실패하므로 허용 |
 | MockBukkit이 비동기·스케줄러를 다르게 다룸 | 초기화 future를 테스트용으로 노출하고, 메인 스레드 작업은 `performTicks`로 진행 |
 
 ## 7. 플레이테스트 포인트 (G3)
