@@ -14,6 +14,7 @@ import org.testcontainers.postgresql.PostgreSQLContainer;
 import com.zaxxer.hikari.HikariDataSource;
 import dev.blockgate.core.db.DataSourceFactory;
 import dev.blockgate.core.db.DatabaseSettings;
+import dev.blockgate.core.db.PostgresContainerSupport;
 
 import java.util.List;
 import java.util.Map;
@@ -34,7 +35,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class BlockGateCoreIT {
 
     @Container
-    static final PostgreSQLContainer PG = new PostgreSQLContainer("postgres:17.12");
+    static final PostgreSQLContainer PG = PostgresContainerSupport.newContainer();
 
     private ServerMock server;
 
@@ -49,11 +50,7 @@ class BlockGateCoreIT {
     }
 
     private BlockGateCore loadWithRealDb() {
-        Map<String, String> env = Map.of(
-                "BLOCKGATE_DB_URL", PG.getJdbcUrl(),
-                "BLOCKGATE_DB_USER", PG.getUsername(),
-                "BLOCKGATE_DB_PASSWORD", PG.getPassword());
-        return MockBukkit.load(BlockGateCore.class, env);
+        return MockBukkit.load(BlockGateCore.class, envFor(PG));
     }
 
     @Test

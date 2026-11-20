@@ -31,7 +31,7 @@ dependencies {
 
     // DB — Shadow로 포함하고 relocate (slf4j는 Paper가 제공)
     implementation(libs.hikaricp) { exclude(group = "org.slf4j") }
-    implementation(libs.postgresql)
+    implementation(libs.postgresql) { exclude(group = "org.checkerframework") } // 애너테이션 전용, 런타임 불필요
     implementation(libs.flyway.core)
     implementation(libs.flyway.postgresql)
 
@@ -120,6 +120,7 @@ tasks.shadowJar {
     relocate("com.zaxxer.hikari", "$libs.hikari")
     relocate("org.postgresql", "$libs.postgresql")
     relocate("org.flywaydb", "$libs.flyway")
+    // Flyway 바이트코드가 jackson을 참조한다(런타임 의존성엔 없음) → 다른 플러그인의 jackson을 잡지 않게 참조만 relocate
     relocate("com.fasterxml", "$libs.fasterxml")
     relocate("tools.jackson", "$libs.jackson")
 }

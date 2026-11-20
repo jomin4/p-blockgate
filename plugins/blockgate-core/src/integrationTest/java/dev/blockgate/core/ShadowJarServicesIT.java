@@ -35,7 +35,9 @@ class ShadowJarServicesIT {
         }
         assertThat(expected).as("원본 서비스 항목 (flyway-core + flyway-database-postgresql)").hasSizeGreaterThan(3);
 
-        Path jar = Path.of(System.getProperty("blockgate.shadowJar"));
+        String jarPath = System.getProperty("blockgate.shadowJar");
+        assertThat(jarPath).as("Gradle integrationTest 태스크로 실행해야 한다 (blockgate.shadowJar 속성)").isNotNull();
+        Path jar = Path.of(jarPath);
         List<String> actual;
         try (JarFile jarFile = new JarFile(jar.toFile())) {
             var entry = jarFile.getEntry(

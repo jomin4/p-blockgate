@@ -45,12 +45,27 @@ class MigratorIT {
         try (Connection c = ds.getConnection();
              Statement st = c.createStatement();
              ResultSet rs = st.executeQuery(
-                     "SELECT column_name FROM information_schema.columns "
+                     "SELECT column_name, data_type, is_nullable FROM information_schema.columns "
                              + "WHERE table_name = 'bg_meta' ORDER BY ordinal_position")) {
             assertThat(rs.next()).isTrue();
             assertThat(rs.getString(1)).isEqualTo("key");
+            assertThat(rs.getString(2)).isEqualTo("text");
+            assertThat(rs.getString(3)).isEqualTo("NO");
             assertThat(rs.next()).isTrue();
             assertThat(rs.getString(1)).isEqualTo("value");
+            assertThat(rs.getString(2)).isEqualTo("text");
+            assertThat(rs.getString(3)).isEqualTo("NO");
+            assertThat(rs.next()).isFalse();
+        }
+        try (Connection c = ds.getConnection();
+             Statement st = c.createStatement();
+             ResultSet rs = st.executeQuery(
+                     "SELECT kcu.column_name FROM information_schema.table_constraints tc "
+                             + "JOIN information_schema.key_column_usage kcu ON tc.constraint_name = kcu.constraint_name "
+                             + "WHERE tc.table_name = 'bg_meta' AND tc.constraint_type = 'PRIMARY KEY'")) {
+            assertThat(rs.next()).isTrue();
+            assertThat(rs.getString(1)).as("PK 컬럼").isEqualTo("key");
+            assertThat(rs.next()).isFalse();
         }
     }
 
