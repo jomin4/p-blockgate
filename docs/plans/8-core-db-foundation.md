@@ -53,7 +53,7 @@
 | T17 (추가) | 작업이 `Error`(예: `LinkageError`)를 던져도 같은 원인의 실패 future가 된다 | AC-5 | 실패·예외 | 단위(JUnit) | ☑ |
 | T18 (추가) | 초기화 도중(풀 생성 직후, 마이그레이션 전) 비활성화 → 비활성화가 끝나면 그 풀은 닫혀 있고, 실행기는 종료되고, `dataSource()`는 null | AC-7 | MC 특수 | 통합(MockBukkit + Testcontainers) | ☑ |
 | T19 (추가) | URL 미설정으로 활성화 → SEVERE `DB 연결 실패: DB URL이 설정되지 않았습니다 (…)`, 플러그인 비활성화. 설정 해석은 메인 스레드(onEnable)에서 하므로 DB 실행기를 만들지 않는다 | AC-2, AC-6 | 실패·예외 | 단위(MockBukkit) | ☑ |
-| T20 (추가) | `DatabaseSettings.toString()`에 비밀번호가 드러나지 않는다 (`***`) | AC-1 | 보안 | 단위(JUnit) | ☐ |
+| T20 (추가) | `DatabaseSettings.toString()`에 비밀번호가 드러나지 않는다 (`***`) | AC-1 | 보안 | 단위(JUnit) | ☑ |
 
 > T16은 T15 첫 실행에서 발견: Shadow 9의 기본 `duplicatesStrategy = EXCLUDE` 때문에 서비스 파일이 병합되지 않아, 실서버에서 Flyway가 `NullPointerException`(PluginRegister)으로 실패했다. 서버 없이 CI에서 잡도록 추가.
 > T17~T20은 리뷰(quality)에서 발견: `Error`가 나면 future가 영원히 미완료, 초기화 중 비활성화 시 풀 누수, DB 스레드에서 `getConfig()` 호출, record `toString()`의 비밀번호 노출. AC는 그대로이고 기존 AC를 더 엄밀하게 검증하는 항목이다.

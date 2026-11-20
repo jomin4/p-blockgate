@@ -29,6 +29,12 @@ public record DatabaseSettings(String url, String user, String password, int poo
                 config.getInt("database.pool-size", DEFAULT_POOL_SIZE));
     }
 
+    /** 비밀번호를 가린다 (로그·예외 메시지로 새지 않게). */
+    @Override
+    public String toString() {
+        return "DatabaseSettings[url=" + url + ", user=" + user + ", password=***, poolSize=" + poolSize + "]";
+    }
+
     private static String pick(Map<String, String> env, String key, String fallback) {
         String value = env.get(key);
         return value != null && !value.isBlank() ? value : fallback;
