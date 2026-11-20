@@ -40,7 +40,7 @@ public class BlockGateCore extends JavaPlugin {
         dbExecutor = new DbExecutor(DB_THREADS);
         startup = dbExecutor.submit(this::connectAndMigrate)
                 .whenComplete((result, error) ->
-                        getServer().getScheduler().runTask(this, () -> onStartupFinished(error)));
+                        getServer().getScheduler().runTask(this, () -> onStartupFinished(result, error)));
     }
 
     private MigrationResult connectAndMigrate() {
@@ -49,12 +49,14 @@ public class BlockGateCore extends JavaPlugin {
         return Migrator.migrate(dataSource, getClassLoader());
     }
 
-    private void onStartupFinished(Throwable error) {
+    private void onStartupFinished(MigrationResult result, Throwable error) {
         if (error != null) {
             Throwable cause = error.getCause() != null ? error.getCause() : error;
             getLogger().log(Level.SEVERE, "DB 연결 실패: " + cause.getMessage(), cause);
             getServer().getPluginManager().disablePlugin(this);
+            return;
         }
+        getLogger().info("DB 연결 성공 (스키마 버전 " + result.schemaVersion() + ")");
     }
 
     /** 테스트용: 비동기 초기화(결과 처리 예약까지)가 끝나면 완료되는 future. */
