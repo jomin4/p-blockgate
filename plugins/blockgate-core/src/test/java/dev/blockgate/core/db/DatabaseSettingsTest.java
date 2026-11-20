@@ -50,4 +50,14 @@ class DatabaseSettingsTest {
         assertThat(settings.password()).isEqualTo("env-pass");
         assertThat(settings.poolSize()).isEqualTo(6);
     }
+
+    @Test
+    @DisplayName("T3 / AC-1: pool-size 미설정이면 4")
+    void defaultPoolSizeIsFour() {
+        var yaml = config("jdbc:postgresql://cfg-host:5432/cfgdb", "cfg-user", "cfg-pass", null);
+
+        DatabaseSettings settings = DatabaseSettings.resolve(Map.of(), yaml);
+
+        assertThat(settings.poolSize()).isEqualTo(4);
+    }
 }
