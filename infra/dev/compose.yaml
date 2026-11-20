@@ -1,0 +1,55 @@
+# BlockGate 로컬 개발 서버 — 명세: docs/02-infrastructure.md B장, 사용법: .claude/skills/local-dev/SKILL.md
+# 실행 (레포 루트): docker compose -p blockgate-dev -f infra/dev/compose.yaml --env-file infra/dev/.env up -d
+# 모든 포트는 127.0.0.1에만 바인딩한다. 이미지·버전은 docs/01-tech-stack.md 고정표를 따른다.
+name: blockgate-dev
+
+services:
+  mc:
+    image: itzg/minecraft-server:2026.11.0-java25
+    container_name: blockgate-dev-mc
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      EULA: ${MC_EULA:?MC_EULA를 .env에 설정하세요 (개발자 동의 후 TRUE)}
+      TYPE: PAPER
+      VERSION: ${MC_VERSION:?MC_VERSION 필요}
+      PAPER_BUILD: ${MC_PAPER_BUILD:?MC_PAPER_BUILD 필요}
+      MEMORY: ${MC_MEMORY:-4G}
+      ONLINE_MODE: "FALSE" # 로컬 전용: 봇(VitaminMCP) 접속용
+      ENABLE_RCON: "TRUE"
+      RCON_PASSWORD: ${MC_RCON_PASSWORD:?MC_RCON_PASSWORD 필요}
+      TZ: Asia/Seoul
+      # 플러그인이 읽는 DB 접속 정보 (Phase 4, 환경변수 우선)
+      BLOCKGATE_DB_URL: jdbc:postgresql://postgres:5432/${DB_NAME:-blockgate}
+      BLOCKGATE_DB_USER: ${DB_USER:-blockgate}
+      BLOCKGATE_DB_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD 필요}
+    ports:
+      - "127.0.0.1:25565:25565"
+      - "127.0.0.1:25575:25575" # RCON (로컬 전용)
+    volumes:
+      - ./data:/data
+      - ./plugins-extra:/plugins:ro # VitaminMCP 등 외부 플러그인 JAR (gitignore) → /data/plugins로 동기화
+    tty: true
+    stdin_open: true
+
+  postgres:
+    image: postgres:17.12
+    container_name: blockgate-dev-postgres
+    environment:
+      POSTGRES_DB: ${DB_NAME:-blockgate}
+      POSTGRES_USER: ${DB_USER:-blockgate}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD 필요}
+      TZ: Asia/Seoul
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data # 이름 있는 볼륨: 초기화는 `down -v`
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+volumes:
+  pgdata:
