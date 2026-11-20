@@ -109,7 +109,13 @@ tasks.jacocoTestReport {
 // ── 배포 JAR: 의존성 포함 + relocate ──
 tasks.shadowJar {
     archiveFileName.set("BlockGateCore.jar")
+    // Shadow 9 기본값(EXCLUDE)은 같은 이름의 서비스 파일을 병합 전에 버린다 (T16).
+    // 서비스 파일만 INCLUDE로 받아 병합하고, 나머지 중복은 EXCLUDE 유지.
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
     mergeServiceFiles()
+    filesNotMatching("META-INF/services/**") {
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    }
     val libs = "dev.blockgate.core.libs"
     relocate("com.zaxxer.hikari", "$libs.hikari")
     relocate("org.postgresql", "$libs.postgresql")
