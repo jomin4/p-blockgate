@@ -4,11 +4,12 @@
 
 | 구분 | 항목 | 버전 | 고정 위치 |
 |---|---|---|---|
-| 게임 | Minecraft / Paper | 26.1.2, stable 빌드 `N` | `infra/*/compose`의 `VERSION`, `PAPER_BUILD` |
+| 게임 | Minecraft / Paper | 26.1.2, stable 빌드 **74** (2026-07-06, Phase 2 고정) | `infra/*/.env`의 `MC_VERSION`, `MC_PAPER_BUILD` |
 | 런타임 | Java | Temurin 25 | Gradle toolchain, itzg 이미지 태그 |
+| 컨테이너 | itzg/minecraft-server | `2026.11.0-java25` (amd64·arm64) | `infra/*/compose.yaml` |
 | 빌드 | Gradle | 9.x (Java 25 지원 버전) | `plugins/gradle/wrapper/gradle-wrapper.properties` |
-| API | paper-api | `26.1.2.build.N-stable` (서버 빌드와 동일) | `plugins/gradle/libs.versions.toml` |
-| DB | PostgreSQL | 17 | compose 이미지 태그, Testcontainers 이미지 |
+| API | paper-api | `26.1.2.build.74-stable` (서버 빌드와 동일) | `plugins/gradle/libs.versions.toml` |
+| DB | PostgreSQL | 17 (`postgres:17.12`) | compose 이미지 태그, Testcontainers 이미지 |
 | 라이브러리 | pgJDBC, HikariCP, Flyway | 세팅 시점 최신 stable | `libs.versions.toml` |
 | 테스트 | JUnit 5, AssertJ | MockBukkit과 호환되는 버전 | `libs.versions.toml` |
 | | MockBukkit | `org.mockbukkit.mockbukkit:mockbukkit-v26.1.2` | `libs.versions.toml` |

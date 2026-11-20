@@ -66,14 +66,14 @@
 
 | 서비스 | 설정 |
 |---|---|
-| `mc` | 운영과 같은 이미지·버전·빌드. `ONLINE_MODE=FALSE`(봇 접속용), `localhost:25565`만 바인딩, RCON 활성(`localhost` 바인딩) |
-| `postgres` | `postgres:17`, `127.0.0.1:5432`만 바인딩 |
+| `mc` | 운영과 같은 이미지·버전·빌드. `ONLINE_MODE=FALSE`(봇 접속용), `127.0.0.1:25565`만 바인딩, RCON 활성(`127.0.0.1:25575` 바인딩) |
+| `postgres` | `postgres:17.12`, `127.0.0.1:5432`만 바인딩, 데이터는 이름 있는 볼륨 `blockgate-dev_pgdata` |
 | VitaminMCP 플러그인 | `infra/dev/plugins-extra/`에 다운로드 (gitignore), 컨테이너 plugins로 복사 |
 
 | 항목 | 값 |
 |---|---|
 | Compose 프로젝트명 | `blockgate-dev` |
-| 데이터 | `infra/dev/data/` (gitignore) |
+| 데이터 | MC: `infra/dev/data/` (gitignore) / DB: Docker 볼륨 `blockgate-dev_pgdata` (초기화는 `down -v`) |
 | 플러그인 반영 | Gradle 태스크 `deployDev`: shadowJar → `infra/dev/data/plugins/` 복사 → `docker compose restart mc` |
 | DB 접속 | `docker compose -p blockgate-dev exec postgres psql -U blockgate` |
 | 통합 테스트 DB | 로컬 Compose DB를 **쓰지 않는다**. Testcontainers가 테스트마다 격리 DB를 띄운다 |

@@ -69,7 +69,7 @@
 | 5 | `docker compose -p blockgate-dev up -d` → 로그에서 `Done (` 확인 |
 | 6 | `local-dev` 스킬의 명령(시작·중지·로그·psql·초기화)이 동작하는지 확인 |
 
-- [ ] ✅ 로컬 서버 기동, psql 접속, 데이터가 `infra/dev/data/`에만 생기는지 확인
+- [x] ✅ 로컬 서버 기동, psql 접속, 데이터가 `infra/dev/data/`에만 생기는지 확인 (DB는 Docker 볼륨 `blockgate-dev_pgdata`)
 
 ## Phase 3. VitaminMCP 검증 (E2E 도구)
 
@@ -163,7 +163,7 @@
 |---|---|---|
 | 0. 사전 점검 | ✅ | — |
 | 1. Git · GitHub | ✅ (collaborator 초대는 추후) | #3 |
-| 2. 로컬 개발 인프라 | ⬜ | |
+| 2. 로컬 개발 인프라 | ✅ | #5 |
 | 3. VitaminMCP 검증 | ⬜ | |
 | 4. 플러그인 골격 + 테스트 | ⬜ | |
 | 5. OCI 인프라 | ⬜ | |
