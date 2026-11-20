@@ -30,7 +30,7 @@ public final class DbExecutor implements AutoCloseable {
             try {
                 future.complete(task.call());
             } catch (Exception e) {
-                throw new IllegalStateException(e); // T10에서 실패 future로 바꾼다
+                future.completeExceptionally(e);
             }
         });
         return future;

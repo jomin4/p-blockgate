@@ -43,7 +43,7 @@
 | T7 | 빈 DB 마이그레이션 → 버전 1, `bg_meta` 존재 | AC-4 | 정상 | 통합(Testcontainers) | ☑ |
 | T8 | 마이그레이션 두 번째 실행 → 적용 0건 (재시작 후 유지) | AC-4 | MC 특수 | 통합(Testcontainers) | ☑ |
 | T9 | 맡긴 작업이 `BlockGateCore-DB-` 스레드에서 실행되고 결과를 돌려준다 | AC-5 | 정상 | 단위(JUnit) | ☑ |
-| T10 | 작업 예외 → 같은 원인의 실패 future | AC-5 | 실패·예외 | 단위(JUnit) | ☐ |
+| T10 | 작업 예외 → 같은 원인의 실패 future | AC-5 | 실패·예외 | 단위(JUnit) | ☑ |
 | T11 | 닫힌 실행기에 맡기면 `IllegalStateException` 실패 future | AC-5 | 경계 | 단위(JUnit) | ☐ |
 | T12 | 연결할 수 없는 DB 설정으로 활성화 → `onEnable` 예외 없음, SEVERE `DB 연결 실패:` 로그, 플러그인 비활성화 | AC-6 | 실패·예외 | 단위(MockBukkit) | ☐ |
 | T13 | 실제 DB로 활성화 → INFO `DB 연결 성공 (스키마 버전 1)`, 플러그인 활성 유지 | AC-6 | 정상 | 통합(MockBukkit + Testcontainers) | ☐ |
