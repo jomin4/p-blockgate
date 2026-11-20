@@ -64,6 +64,20 @@ class BlockGateCoreIT {
         });
     }
 
+    @Test
+    @DisplayName("T14 / AC-7: 비활성화 → 풀 닫힘")
+    void closesPoolOnDisable() {
+        BlockGateCore plugin = loadWithRealDb();
+        plugin.startupFuture().orTimeout(60, TimeUnit.SECONDS).join();
+        server.getScheduler().performOneTick();
+        var dataSource = plugin.dataSource();
+        assertThat(dataSource.isClosed()).isFalse();
+
+        server.getPluginManager().disablePlugin(plugin);
+
+        assertThat(dataSource.isClosed()).isTrue();
+    }
+
     static List<LogRecord> capture(BlockGateCore plugin) {
         List<LogRecord> records = new CopyOnWriteArrayList<>();
         plugin.getLogger().addHandler(new Handler() {
